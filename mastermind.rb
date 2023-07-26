@@ -1,13 +1,12 @@
-class SecretCode
-
+class ComputerPlayer
   def initialize()
     @correct_colors = []
-    build_code()
+    @past_guesses = []
   end
 
-  def build_code()
+  def build_code(letters)
     i = 0
-    4.times do
+    letters.times do
       color = rand(1..6)
       case color
       when 1
@@ -122,7 +121,8 @@ end
 
 def codebreaker_game(player)
 
-  game_code = SecretCode.new()
+  cpu_player = ComputerPlayer.new()
+  cpu_player.build_code(4)
   solved = false
 
   puts "Please enter a 4-letter code using only the letters 'R', 'O', 'Y', 'G', 'B', or 'P'."
@@ -130,20 +130,20 @@ def codebreaker_game(player)
 
   until total_guesses > 12 || solved
     puts "Guess ##{total_guesses}:"
-    solved = game_code.check_guess(player.make_guess)
+    solved = cpu_player.check_guess(player.make_guess)
     total_guesses += 1
   end
 
   if solved
     puts "CONGRATULATIONS! You cracked the code!"
   else
-    puts "GAME OVER! The correct code was #{game_code.reveal_code}"
+    puts "GAME OVER! The correct code was #{cpu_player.reveal_code}"
   end
 
 end
 
 def codemaker_game(player)
-
+  
 end
 
 menu()
