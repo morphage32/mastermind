@@ -69,7 +69,20 @@ class SecretCode
   end
 end
 
-class Player
+class User
+
+  def choose_role()
+    player_choice = '0'
+
+    until player_choice == '1' || player_choice == '2'
+      player_choice = gets.chomp
+      unless player_choice == '1' || player_choice == '2'
+        puts "Sorry, please enter only the number '1' or '2' to play!"
+      end
+    end
+
+    return player_choice.to_i
+  end
 
   def make_guess()
 
@@ -92,19 +105,32 @@ class Player
 
 end
 
-def game()
+def menu()
+  current_user = User.new()
+  role = 0
+
+  puts "-=MASTERMIND=- \nEnter '1' to be the Code-Breaker or '2' to be the Code-Maker:"
+  role = current_user.choose_role
+
+  if role == 1
+    codebreaker_game(current_user)
+  else
+    codemaker_game(current_user)
+  end
+
+end
+
+def codebreaker_game(player)
 
   game_code = SecretCode.new()
-  player1 = Player.new()
   solved = false
 
-  puts "-=MASTERMIND=- \nYou have 12 chances to guess a 4-color code!"
   puts "Please enter a 4-letter code using only the letters 'R', 'O', 'Y', 'G', 'B', or 'P'."
   total_guesses = 1
 
   until total_guesses > 12 || solved
     puts "Guess ##{total_guesses}:"
-    solved = game_code.check_guess(player1.make_guess)
+    solved = game_code.check_guess(player.make_guess)
     total_guesses += 1
   end
 
@@ -116,4 +142,8 @@ def game()
 
 end
 
-game()
+def codemaker_game(player)
+
+end
+
+menu()
