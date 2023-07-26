@@ -63,6 +63,29 @@ class SecretCode
   end
 end
 
+class Player
+
+  def make_guess()
+    valid_guess = false
+
+    until valid_guess do
+      puts "Please enter a 4-letter code using only the letters 'R', 'O', 'Y', 'G', 'B', or 'P'."
+      player_guess = gets.chomp
+      player_guess = player_guess.upcase
+
+      if player_guess.length != 4
+        puts "Sorry, your code must be 4 characters long."
+      elsif player_guess.count("ROYGBP") != 4
+        puts "Sorry, your code must only contain the letters 'R', 'O', 'Y', 'G', 'B', or 'P'."
+      else
+        valid_guess = true
+      end
+    end
+    player_guess
+  end
+end
+
 my_code = SecretCode.new()
+player1 = Player.new()
+my_code.check_guess(player1.make_guess)
 my_code.show_code()
-my_code.check_guess("YGBG")
