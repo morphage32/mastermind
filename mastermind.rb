@@ -1,7 +1,6 @@
 class ComputerPlayer
   def initialize()
-    @correct_colors = []
-    @past_guesses = []
+    @computer_colors = []
   end
 
   def build_code(letters)
@@ -10,24 +9,31 @@ class ComputerPlayer
       color = rand(1..6)
       case color
       when 1
-        @correct_colors.push("R")
+        @computer_colors.push("R")
       when 2
-        @correct_colors.push("O")
+        @computer_colors.push("O")
       when 3
-        @correct_colors.push("Y")
+        @computer_colors.push("Y")
       when 4
-        @correct_colors.push("G")
+        @computer_colors.push("G")
       when 5
-        @correct_colors.push("B")
+        @computer_colors.push("B")
       when 6
-        @correct_colors.push("P") 
+        @computer_colors.push("P") 
       end
     end
   end
 
+  def build_guess()
+    @computer_colors.clear
+    build_code(4)
+
+    return @computer_colors.join
+  end
+
   def check_guess(guess)
     guess_colors = guess.split("")
-    close_items = @correct_colors.join
+    close_items = @computer_colors.join
 
     exact_guesses = 0
     close_guesses = 0
@@ -35,7 +41,7 @@ class ComputerPlayer
     # check which colors are in exactly the right spot
     i = 0
     4.times do
-      if @correct_colors[i] == guess_colors[i]
+      if @computer_colors[i] == guess_colors[i]
         exact_guesses += 1
       end
       i += 1
@@ -64,8 +70,9 @@ class ComputerPlayer
   end
 
   def reveal_code()
-    return @correct_colors.join
+    return @computer_colors.join
   end
+  
 end
 
 class User
@@ -102,6 +109,32 @@ class User
     player_guess
   end
 
+  def give_feedback()
+
+    valid_feedback = false
+
+    until valid_feedback
+      puts "How many colors were exactly correct?"
+      exact_matches = gets.chomp.to_i
+      if exact_matches > 4 || exact_matches < 0
+        puts "Invalid feedback, please try again."
+        next
+      elsif exact_matches == 4
+        return true
+      end
+
+      puts "How many colors are in your code but out of place?"
+      near_matches = gets.chomp.to_i
+      if near_matches + exact_matches > 4 || near_matches < 0
+        puts "Invalid feedback, please try again."
+        next
+      end
+      valid_feedback = true
+    end
+
+    return false
+  end
+
 end
 
 def menu()
@@ -124,9 +157,9 @@ def codebreaker_game(player)
   cpu_player = ComputerPlayer.new()
   cpu_player.build_code(4)
   solved = false
+  total_guesses = 1
 
   puts "Please enter a 4-letter code using only the letters 'R', 'O', 'Y', 'G', 'B', or 'P'."
-  total_guesses = 1
 
   until total_guesses > 12 || solved
     puts "Guess ##{total_guesses}:"
@@ -143,7 +176,28 @@ def codebreaker_game(player)
 end
 
 def codemaker_game(player)
-  
+  cpu_player = ComputerPlayer.new()
+  solved = false
+  total_guesses = 1
+
+  puts "Please make up your own 4-letter code using only the letters 'R', 'O', Y', 'G', 'B' or 'P'."
+  puts "I will try and guess your code in 12 turns! Press Enter to continue."
+
+  gets
+
+  until total_guesses > 12 || solved
+    puts "Guess ##{total_guesses}:"
+    puts cpu_player.build_guess
+    solved = player.give_feedback
+    total_guesses += 1
+  end
+
+  if solved
+    puts "I cracked the code! :)"
+  else
+    puts "GAME OVER! I couldn't crack the code..."
+  end
+
 end
 
 menu()
